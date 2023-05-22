@@ -43,20 +43,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useFetch } from "@vueuse/core";
 
 const news = ref([]);
 const apiKey = "f0a6d1e45c914cbbb4ac7541daf5b4d8";
 
-const fetchData = async () => {
-  const response = await fetch(
-    `https://newsapi.org/v2/everything?q=Business&sortBy=publishedAt&apiKey=${apiKey}`
-  );
-  const data = await response.json();
-  return data.articles;
-};
-
 onMounted(async () => {
-  news.value = await fetchData();
+  const { data } = await useFetch(
+    `https://newsapi.org/v2/everything?q=Business&sortBy=publishedAt&apiKey=${apiKey}`
+  ).json();
+  console.log(data._rawValue.articles);
+  news.value = data._rawValue.articles;
 });
 
 const searchKeyword = ref("");
